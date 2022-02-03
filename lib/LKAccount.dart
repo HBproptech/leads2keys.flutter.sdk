@@ -41,9 +41,11 @@ class LKAccount {
             List.from(json['mandats']).map((e) => LKMandate.fromJson(e))));
   }
 
-  Future<List<LKMandate>> getMandates(String query) async {
+  Future<List<LKMandate>?> getMandates(String query) async {
     final response = await getWithQuery("mandates", query);
-    return List<LKMandate>.from(List.from(jsonDecode(response.body)["mandats"])
-        .map((e) => LKMandate.fromJson(e)));
+    if (response.statusCode == 200)
+      return List<LKMandate>.from(
+          List.from(jsonDecode(response.body)["mandats"])
+              .map((e) => LKMandate.fromJson(e)));
   }
 }
