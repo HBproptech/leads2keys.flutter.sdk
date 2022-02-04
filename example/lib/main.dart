@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:leads2keys_api/LKAccount.dart';
 import 'package:leads2keys_api/Leads2Keys.dart';
@@ -51,14 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const WebviewLogin(
+                          builder: (context) => WebviewLogin(
                               'https://api.l2k.io/auth/authorization?client_id=flutter')));
-                },
-                child: const Text("Créer un client")),
-            ElevatedButton(
-                onPressed: () async {
-                  account =
-                      await LK().signIn({'login': 'test', 'password': 'test'});
                 },
                 child: const Text("Se connecter")),
             ElevatedButton(
@@ -71,36 +63,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class WebviewLogin extends StatelessWidget {
   final String? url;
-  const WebviewLogin(this.url, {Key? key}) : super(key: key);
+  WebViewController? _controller;
+
+  WebviewLogin(this.url, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    WebViewController? _controller;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Connexion à L2K'),
         ),
         body: Builder(builder: (BuildContext context) {
           return WebView(
-            javascriptMode: JavascriptMode.unrestricted,
-            initialUrl: url,
-            onWebViewCreated: (WebViewController webViewController) async {
-              _controller = webViewController;
-            },
-            onPageStarted: (url) => {
-              if (url == 'https://api.l2k.io/auth/authorization')
-                {
-                  getResponse(_controller, url),
-                  Navigator.pop(context),
+              javascriptMode: JavascriptMode.unrestricted,
+              initialUrl: url,
+              onWebViewCreated: (WebViewController webViewController) async {
+                _controller = webViewController;
+              },
+              navigationDelegate: (navigation) async {
+                if (navigation.url.startsWith('l2k://')) {
+                  LK().signIn(navigation.url);
+                  NavigationDecision.prevent;
+                  Navigator.pop(context);
+                  return NavigationDecision.prevent;
+                } else {
+                  return NavigationDecision.navigate;
                 }
-            },
-          );
+              });
         }));
-  }
-
-  Future<String?> getResponse(WebViewController? controller, String url) async {
-    String response = await controller!
-        .runJavascriptReturningResult("document.documentElement.innerHTML");
-    print(response);
   }
 }

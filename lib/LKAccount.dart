@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:leads2keys_api/LKMandate.dart';
-import 'package:leads2keys_api/Leads2Keys.dart';
 
 import 'LKAgency.dart';
 import 'LKUser.dart';
@@ -42,10 +39,10 @@ class LKAccount {
   }
 
   Future<List<LKMandate>?> getMandates(String query) async {
-    final response = await getWithQuery("mandates", query);
+    /* final response = await getWithQuery("mandates", query);
     if (response.statusCode == 200)
       return List<LKMandate>.from(
           List.from(jsonDecode(response.body)["mandats"])
-              .map((e) => LKMandate.fromJson(e)));
+              .map((e) => LKMandate.fromJson(e))); */
   }
 }
