@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-
-final tokenEndpoint = Uri.parse('https://api.l2k.io/auth/token');
+String tokenEndpoint = 'https://api.l2k.io/auth/token';
 
 String server = 'https://api.l2k.io/';
 
-class LK {
+class L2K {
   void signIn(String url, String clientId, String clientSecret) async {
     if (url.contains('code')) {
       String codeAuth = url.substring(url.indexOf('=') + 1, url.indexOf('&'));

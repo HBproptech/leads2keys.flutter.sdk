@@ -73,7 +73,7 @@ class WebviewLogin extends StatelessWidget {
   final String clientId;
   final String clientSecret;
 
-  const WebviewLogin(this.clientId, this.clientSecret, this.url, {Key? key})
+  const WebviewLogin(this.url, this.clientId, this.clientSecret, {Key? key})
       : super(key: key);
 
   @override
@@ -82,7 +82,7 @@ class WebviewLogin extends StatelessWidget {
         initialUrl: url,
         navigationDelegate: (navigation) async {
           if (navigation.url.startsWith('l2k://')) {
-            LK().signIn(navigation.url, clientId, clientSecret);
+            L2K().signIn(navigation.url, clientId, clientSecret);
             NavigationDecision.prevent;
             Navigator.pop(context);
             return NavigationDecision.prevent;
