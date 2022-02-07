@@ -46,15 +46,23 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text("Test de l'API de Leads2Keys"),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                            child: WebviewLogin(
+                                'https://api.l2k.io/auth/authorization?client_id=$clientId'));
+                      });
+                  /* Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => WebviewLogin(
-                              'https://api.l2k.io/auth/authorization?client_id=flutter')));
+                              'https://api.l2k.io/auth/authorization?client_id=flutter'))); */
                 },
                 child: const Text("Se connecter")),
             ElevatedButton(
-                onPressed: () => account!.getMandates("status=available"),
+                onPressed: () =>
+                    account!.agency.getMandates("status=available"),
                 child: const Text("Récupérer les mandats"))
           ],
         )));
@@ -63,33 +71,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class WebviewLogin extends StatelessWidget {
   final String? url;
-  WebViewController? _controller;
 
   WebviewLogin(this.url, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Connexion à L2K'),
-        ),
-        body: Builder(builder: (BuildContext context) {
-          return WebView(
-              javascriptMode: JavascriptMode.unrestricted,
-              initialUrl: url,
-              onWebViewCreated: (WebViewController webViewController) async {
-                _controller = webViewController;
-              },
-              navigationDelegate: (navigation) async {
-                if (navigation.url.startsWith('l2k://')) {
-                  LK().signIn(navigation.url);
-                  NavigationDecision.prevent;
-                  Navigator.pop(context);
-                  return NavigationDecision.prevent;
-                } else {
-                  return NavigationDecision.navigate;
-                }
-              });
-        }));
+    return WebView(
+        initialUrl: url,
+        navigationDelegate: (navigation) async {
+          if (navigation.url.startsWith('l2k://')) {
+            LK().signIn(navigation.url);
+            NavigationDecision.prevent;
+            Navigator.pop(context);
+            return NavigationDecision.prevent;
+          } else {
+            return NavigationDecision.navigate;
+          }
+        });
   }
 }

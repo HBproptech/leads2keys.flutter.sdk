@@ -13,8 +13,6 @@ class LK {
     if (url.contains('code')) {
       String codeAuth = url.substring(url.indexOf('=') + 1, url.indexOf('&'));
       String state = url.substring(url.lastIndexOf('=') + 1);
-      print(Uri.parse(
-          "$tokenEndpoint?client_id=$clientId&code=$codeAuth&state=$state"));
       http.Response response = await http.post(
           Uri.parse(
               "$tokenEndpoint?client_id=$clientId&code=$codeAuth&state=$state"),
@@ -27,10 +25,11 @@ class LK {
           headers: {
             'content_type': 'application/json'
           });
-      print(response.body);
       final json = jsonDecode(response.body);
       String accessToken = json["access_token"];
-      String refreshToken = json["access_token"];
+      String refreshToken = json["refresh_token"];
+      print(accessToken);
+      print(refreshToken);
     }
   }
 }
