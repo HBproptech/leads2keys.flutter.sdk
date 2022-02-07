@@ -2,14 +2,13 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-String clientId = "flutter";
-String clientSecret = "b076542a-13dd-4d7d-aed6-b4a741f6de8f";
+
 final tokenEndpoint = Uri.parse('https://api.l2k.io/auth/token');
 
 String server = 'https://api.l2k.io/';
 
 class LK {
-  void signIn(String url) async {
+  void signIn(String url, String clientId, String clientSecret) async {
     if (url.contains('code')) {
       String codeAuth = url.substring(url.indexOf('=') + 1, url.indexOf('&'));
       String state = url.substring(url.lastIndexOf('=') + 1);
@@ -28,8 +27,6 @@ class LK {
       final json = jsonDecode(response.body);
       String accessToken = json["access_token"];
       String refreshToken = json["refresh_token"];
-      print(accessToken);
-      print(refreshToken);
     }
   }
 }

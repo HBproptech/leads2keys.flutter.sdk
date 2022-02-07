@@ -33,6 +33,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   LKAccount? account;
+  String clientId = "flutter";
+  String clientSecret = "b076542a-13dd-4d7d-aed6-b4a741f6de8f";
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       builder: (BuildContext context) {
                         return Dialog(
                             child: WebviewLogin(
-                                'https://api.l2k.io/auth/authorization?client_id=$clientId'));
+                                'https://api.l2k.io/auth/authorization?client_id=$clientId',
+                                clientId,
+                                clientSecret));
                       });
-                  /* Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => WebviewLogin(
-                              'https://api.l2k.io/auth/authorization?client_id=flutter'))); */
                 },
                 child: const Text("Se connecter")),
             ElevatedButton(
@@ -71,8 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class WebviewLogin extends StatelessWidget {
   final String? url;
+  final String clientId;
+  final String clientSecret;
 
-  WebviewLogin(this.url, {Key? key}) : super(key: key);
+  const WebviewLogin(this.clientId, this.clientSecret, this.url, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +82,7 @@ class WebviewLogin extends StatelessWidget {
         initialUrl: url,
         navigationDelegate: (navigation) async {
           if (navigation.url.startsWith('l2k://')) {
-            LK().signIn(navigation.url);
+            LK().signIn(navigation.url, clientId, clientSecret);
             NavigationDecision.prevent;
             Navigator.pop(context);
             return NavigationDecision.prevent;
