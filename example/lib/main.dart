@@ -60,8 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text("Se connecter")),
             ElevatedButton(
-                onPressed: () =>
-                    account!.agency.getMandates("status=available"),
+                onPressed: () => account!.agency.getMandates(account!),
                 child: const Text("Récupérer les mandats"))
           ],
         )));

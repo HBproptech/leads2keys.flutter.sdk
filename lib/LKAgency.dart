@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:leads2keys_api/LKAccount.dart';
 import 'package:leads2keys_api/LKMandate.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,12 +27,14 @@ class LKAgency {
         address: json["address"]);
   }
 
-  Future<List<LKMandate>?> getMandates(String query) async {
-    http.Response response = await http.get(Uri.parse('/mandates'));
-
-    if (response.statusCode == 200)
+  Future<List<LKMandate>?> getMandates(LKAccount account) async {
+    http.Response response = await http.get(Uri.parse('/mandates'),
+        headers: {'Authorization': 'Bearer ${account.token}'});
+    if (response.statusCode == 200) {
       return List<LKMandate>.from(
           List.from(jsonDecode(response.body)["mandats"])
               .map((e) => LKMandate.fromJson(e)));
+    } else
+      return null;
   }
 }
